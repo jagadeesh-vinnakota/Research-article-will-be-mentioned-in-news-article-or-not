@@ -1,0 +1,15 @@
+
+DECISION TREE
+   Accuracy  - 0.667826086957
+   Precision - 0.690839694656
+   Recall    - 0.621993127148
+
+RANDOM FOREST
+   Accuracy  - 0.710434782609
+   Precision - 0.717277486911
+   Recall    - 0.70618556701
+
+SVM
+Accuracy     - 0.690434782609
+Precision    - 0.682258064516
+Recall       - 0.726804123711
