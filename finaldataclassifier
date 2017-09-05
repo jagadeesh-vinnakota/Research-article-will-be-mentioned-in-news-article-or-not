@@ -1,0 +1,84 @@
+import csv
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import accuracy_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+import random
+from sklearn.model_selection import cross_val_score
+count = 0
+count1 = 0
+list = []
+finallist = []
+counting = 0
+with open('D:finaldatafileforclassification1.csv') as fp:
+    reader = csv.reader(fp)
+    for row in reader:
+        listforinner = []
+        for i in row:
+            listforinner.append(int(i))
+        finallist.append(listforinner)
+data_xx = []
+data_y = []
+for i in finallist:
+    data_x = []
+    for j in range(0,len(i)-1):
+        data_x.append(i[j])
+    data_xx.append(data_x)
+    data_y.append(i[len(i)-1])
+x_train,x_test,y_train,y_test = train_test_split(data_xx,data_y,test_size=0.3,random_state=0)
+#print(x_train)
+#print(y_train)
+#deisiontree classifier
+clf = DecisionTreeClassifier(random_state=0)
+clf.fit(x_train,y_train)
+scores = cross_val_score(clf,data_xx,data_y,cv=10)
+print(scores)
+print('DECISION TREE')
+print(accuracy_score(y_test,clf.predict(x_test)))
+print(precision_score(y_test,clf.predict(x_test)))
+print(recall_score(y_test,clf.predict(x_test)))
+
+print('RANDOM FOREST')
+#random Forest
+clf2 = RandomForestClassifier(n_estimators=50)
+clf2.fit(x_train,y_train)
+scores = cross_val_score(clf2,data_xx,data_y,cv=10)
+print(scores)
+print(accuracy_score(y_test,clf2.predict(x_test)))
+print(precision_score(y_test,clf2.predict(x_test)))
+print(recall_score(y_test,clf2.predict(x_test)))
+
+
+print('SVM')
+clf1 = svm.SVC()
+clf1.fit(x_train,y_train)
+scores = cross_val_score(clf1,data_xx,data_y,cv=10)
+print(scores)
+print(accuracy_score(y_test,clf1.predict(x_test)))
+print(precision_score(y_test,clf1.predict(x_test)))
+print(recall_score(y_test,clf1.predict(x_test)))
+
+
+false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, clf.predict(x_test))
+roc_auc = auc(false_positive_rate, true_positive_rate)
+false_positive_rate1, true_positive_rate1, thresholds = roc_curve(y_test, clf1.predict(x_test))
+roc_auc1 = auc(false_positive_rate1, true_positive_rate1)
+false_positive_rate2, true_positive_rate2, thresholds = roc_curve(y_test, clf2.predict(x_test))
+roc_auc2 = auc(false_positive_rate2, true_positive_rate2)
+plt.title('Receiver Operating Characteristic')
+plt.plot(false_positive_rate, true_positive_rate, 'b',label='DT = %0.2f'% roc_auc,color='navy')
+plt.plot(false_positive_rate1, true_positive_rate1, 'b',label='SVM = %0.2f'% roc_auc1,color='red')
+plt.plot(false_positive_rate2, true_positive_rate2, 'b',label='RF = %0.2f'% roc_auc2,color='black')
+plt.legend(loc='lower right')
+#plt.plot([0,1],[0,1],'r--')
+plt.xlim([-0.1,1.2])
+plt.ylim([-0.1,1.2])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+
