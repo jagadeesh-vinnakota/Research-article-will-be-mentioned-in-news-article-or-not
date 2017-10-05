@@ -1,3 +1,4 @@
+# importing packages
 import csv
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score
@@ -15,6 +16,8 @@ count1 = 0
 list = []
 finallist = []
 counting = 0
+
+#Reading the file and loading the data.
 with open('D:finaldatafileforclassification1.csv') as fp:
     reader = csv.reader(fp)
     for row in reader:
@@ -30,9 +33,14 @@ for i in finallist:
         data_x.append(i[j])
     data_xx.append(data_x)
     data_y.append(i[len(i)-1])
+    
+#Splitting the data set into training and testing.    
 x_train,x_test,y_train,y_test = train_test_split(data_xx,data_y,test_size=0.3,random_state=0)
 #print(x_train)
 #print(y_train)
+
+#Running different classifiers on the etracted data.
+
 #deisiontree classifier
 clf = DecisionTreeClassifier(random_state=0)
 clf.fit(x_train,y_train)
@@ -44,7 +52,9 @@ print(precision_score(y_test,clf.predict(x_test)))
 print(recall_score(y_test,clf.predict(x_test)))
 
 print('RANDOM FOREST')
+
 #random Forest
+
 clf2 = RandomForestClassifier(n_estimators=50)
 clf2.fit(x_train,y_train)
 scores = cross_val_score(clf2,data_xx,data_y,cv=10)
@@ -63,6 +73,7 @@ print(accuracy_score(y_test,clf1.predict(x_test)))
 print(precision_score(y_test,clf1.predict(x_test)))
 print(recall_score(y_test,clf1.predict(x_test)))
 
+#Drawing the roc curves for different classifiers.
 
 false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, clf.predict(x_test))
 roc_auc = auc(false_positive_rate, true_positive_rate)
